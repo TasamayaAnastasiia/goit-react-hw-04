@@ -31,6 +31,7 @@ function App() {
     e.preventDefault();
     try {
       setLoader(true);
+      setListImages([]);
       setIsOpenError(false);
       if (!inputValue) {
         toast.error("Please enter a search value", { position: "bottom-center" });      //field is empty
