@@ -1,0 +1,37 @@
+.header {
+    background-color:  #201985;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+.form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+.ButSearch {
+    cursor: pointer;
+    border-radius: 0 40px 40px 0;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36.5px;
+    padding: 5px;
+    background-color: white;
+    transition: fill 300ms;
+}
+.ButSearch:hover {
+    fill: #201985;
+}
+.inputForSearching {
+    border-radius: 40px 0 0 40px;
+    padding: 10px 0 10px 10px;
+    font-size: 14px;
+    border: none;
+}
+.inputForSearching:focus-visible {
+    border: none;
+    outline: none;
+  }

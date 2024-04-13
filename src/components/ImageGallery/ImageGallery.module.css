@@ -1,0 +1,15 @@
+.list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.image {
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+.image:hover {
+    transform: scale(1.02);
+}

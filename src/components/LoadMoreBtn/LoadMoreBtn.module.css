@@ -1,0 +1,15 @@
+.btnLoad {
+    border: none;
+    cursor: pointer;
+    height: 40px;
+    padding: 10px;
+    background-color:  #201985;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.boxBtn {
+    display: flex;
+    justify-content: center;
+}
