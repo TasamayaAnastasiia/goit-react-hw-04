@@ -1,7 +1,7 @@
-const ImageCard = ({image}) => {
+const ImageCard = ({image, onOpen}) => {
     return (
         <div>
-            <img width="350" height="267" src={image.urls.small} alt=""/>
+            <img onClick={() => onOpen(image.urls.regular, image.created_at)} width="350" height="267" src={image.urls.small} alt=""/>
         </div>
     );
 }

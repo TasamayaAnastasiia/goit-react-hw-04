@@ -22,7 +22,7 @@ const ImageModal = ({ isOpen, onClose, imageUrl, date}) => {
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} contentLabel="Image Modal" style={customStyles}>
-        <img style={{ width: '900px', height: '100%', borderRadius: '10px' }} src={imageUrl}></img>
+        <img style={{ width: '900px', height: '100%' }} src={imageUrl}></img>
         <div>
             <p><b>Date created: {date}</b></p>
         </div>

@@ -5,8 +5,8 @@ const ImageGallery = ({list, onOpen}) => {
     return (
         <ul className={css.list}>
             {list.map(image => (
-                <li className={css.image} key={image.id} onClick={() => onOpen(image.urls.regular, image.created_at)}>
-                    <ImageCard image={image}></ImageCard>
+                <li className={css.image} key={image.id}>
+                    <ImageCard image={image} onOpen={onOpen}></ImageCard>
 	            </li>
             ))}
         </ul>
