@@ -23,23 +23,6 @@ function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageDate, setSelectedImageDate] = useState('');
   const [totalPages, setTotalPages] = useState(0);
-  const [loadMoreClicked, setLoadMoreClicked] = useState(false);
-
-  const handleSubmit = async (e) => {
-
-    e.preventDefault();
-
-    const inputValue = e.target.elements.keyword.value.trim();
-    if (!inputValue) {                                                          //поле пусте
-      setTotalImages(0);
-      setListImages([]);
-      toast.error(`Please enter a search value`, { position: "bottom-center" });  
-      return;
-    }
-    setInputValue(inputValue);
-
-    e.target.reset();
-  }
   
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +40,8 @@ function App() {
         } else {
           setListImages(images.results);
           setTotalImages(images.total);
-          setCurrentPage(currentPage + 1);
+          const newSearch = inputValue !== '' && inputValue !== null;
+          setCurrentPage(newSearch ? 1 : currentPage + 1);
           setTotalPages(images.total_pages);
           toast.success(`Succes! Your data have been recorded`, { position: "bottom-center" })
         }
@@ -78,38 +62,27 @@ function App() {
 
   }, [inputValue]);
 
-  const handleLoadMoreClick = () => {
-    setLoadMoreClicked(true);
-  };
-
-  useEffect(() => {
-    if (loadMoreClicked) {
-      const loadMoreImages = async () => {
-        try {
-          setLoader(true);
-          setIsOpenError(false);
-          const nextPage = currentPage + 1;
-          const images = await fetchImage(inputValue, nextPage);
-          setListImages([...listImages, ...images.results]);
-          setCurrentPage(nextPage);
-          setTotalPages(images.total_pages); 
-        } catch (error) {
-          toast.error(`Error loading more images: ${error.message}`, { position: "bottom-center" });
-          setIsOpenError(true);
-          setListImages([]);
-          setTotalImages(0);
-          setCurrentPage(0);
-        } finally {
-          setLoader(false);
-        }
-      };
-  
-      if (currentPage < totalPages) { 
-        loadMoreImages();
+  const handleLoadMoreClick = async () => {
+    if (currentPage < totalPages) {
+      try {
+        setLoader(true);
+        setIsOpenError(false);
+        const nextPage = currentPage + 1;
+        const images = await fetchImage(inputValue, nextPage);
+        setListImages([...listImages, ...images.results]);
+        setCurrentPage(nextPage);
+        setTotalPages(images.total_pages); 
+      } catch (error) {
+        toast.error(`Error loading more images: ${error.message}`, { position: "bottom-center" });
+        setIsOpenError(true);
+        setListImages([]);
+        setTotalImages(0);
+        setCurrentPage(0);
+      } finally {
+        setLoader(false);
       }
-      setLoadMoreClicked(false);
     }
-  }, [loadMoreClicked]);
+  };
 
   const openModal = (image, date) => {
     setSelectedImage(image);
@@ -122,10 +95,9 @@ function App() {
     setSelectedImage(null);
     setSelectedImageDate('');
   }
-
   return (
     <>
-      <SearchBar onSubmit={handleSubmit}/>
+      <SearchBar onSearch={(value) => setInputValue(value)} onReset={() => { setTotalImages(0), setListImages([])}}/>
       {listImages.length > 0 && <ImageGallery list={listImages} onOpen={openModal} />}
       {loader && <Loader><Audio height="50" width="30" radius="3" color="#201985" ariaLabel="three-dots-loading" wrapperStyle wrapperClass /></Loader>}
       <Toaster />

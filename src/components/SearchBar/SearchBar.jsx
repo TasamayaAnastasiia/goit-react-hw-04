@@ -1,9 +1,28 @@
 import css from '../SearchBar/SearchBar.module.css';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
-const SearchBar = ({onSubmit}) => {
+const SearchBar = ({ onSearch, onReset}) => {
+    const [inputValue, setInputValue] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        const inputValueForm = e.target.elements.keyword.value.trim(); 
+        if (!inputValueForm) {
+            onReset();
+            onSearch('');
+            toast.error(`Please enter a search value`, { position: "bottom-center" });  
+            return;
+        }
+        
+        onSearch(inputValueForm);
+        e.target.reset();
+    }
+
     return (
         <header className={css.header}>
-            <form className={css.form} onSubmit={onSubmit}>
+            <form className={css.form} onSubmit={handleSubmit}>
                 <input className={css.inputForSearching} type="text" autoComplete="off" autoFocus placeholder="Search images and photos" name="keyword"/>
                 <button className={css.ButSearch} type="submit">
                 <svg height="20" width="20" viewBox="0 0 32 32">
