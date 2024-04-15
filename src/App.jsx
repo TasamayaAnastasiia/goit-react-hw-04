@@ -17,31 +17,32 @@ function App() {
   const [listImages, setListImages] = useState([]);
   const [loader, setLoader] = useState(false); 
   const [totalImages, setTotalImages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isOpenError, setIsOpenError] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageDate, setSelectedImageDate] = useState('');
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoader(true);
-        setListImages([]);
         setIsOpenError(false);
 
         const images = await fetchImage(inputValue, currentPage);
+
+        if (currentPage === 1) {
+          setListImages([]);
+        }
 
         if (images.results.length === 0) {
           setListImages([]);
           setTotalImages(0);
           toast.error(`Nothing found for your search: ${inputValue}`, { position: "bottom-center" });  
         } else {
-          setListImages(images.results);
+          setListImages(prevList => [...prevList, ...images.results]);
           setTotalImages(images.total);
-          const newSearch = inputValue !== '' && inputValue !== null;
-          setCurrentPage(newSearch ? 1 : currentPage + 1);
           setTotalPages(images.total_pages);
           toast.success(`Succes! Your data have been recorded`, { position: "bottom-center" })
         }
@@ -50,7 +51,7 @@ function App() {
         setIsOpenError(true);
         setListImages([]);
         setTotalImages(0);
-        setCurrentPage(0);
+        setCurrentPage(1);
       } finally {
         setLoader(false);
       }
@@ -60,27 +61,11 @@ function App() {
       fetchData();
     }
 
-  }, [inputValue]);
+  }, [inputValue, currentPage]);
 
-  const handleLoadMoreClick = async () => {
+  const handleLoadMoreClick = () => {
     if (currentPage < totalPages) {
-      try {
-        setLoader(true);
-        setIsOpenError(false);
-        const nextPage = currentPage + 1;
-        const images = await fetchImage(inputValue, nextPage);
-        setListImages([...listImages, ...images.results]);
-        setCurrentPage(nextPage);
-        setTotalPages(images.total_pages); 
-      } catch (error) {
-        toast.error(`Error loading more images: ${error.message}`, { position: "bottom-center" });
-        setIsOpenError(true);
-        setListImages([]);
-        setTotalImages(0);
-        setCurrentPage(0);
-      } finally {
-        setLoader(false);
-      }
+      setCurrentPage(prevPage => prevPage + 1);
     }
   };
 
@@ -95,9 +80,10 @@ function App() {
     setSelectedImage(null);
     setSelectedImageDate('');
   }
+  
   return (
     <>
-      <SearchBar onSearch={(value) => setInputValue(value)} onReset={() => { setTotalImages(0), setListImages([])}}/>
+      <SearchBar onSearch={(value) => setInputValue(value)} onReset={(valueOne, valueTwo) => {setTotalImages(valueOne), setListImages(valueTwo)}} onPage={(value) => setCurrentPage(value)}/>
       {listImages.length > 0 && <ImageGallery list={listImages} onOpen={openModal} />}
       {loader && <Loader><Audio height="50" width="30" radius="3" color="#201985" ariaLabel="three-dots-loading" wrapperStyle wrapperClass /></Loader>}
       <Toaster />
